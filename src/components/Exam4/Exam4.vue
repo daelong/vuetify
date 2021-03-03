@@ -1,4 +1,5 @@
 <template>
+<v-app id="app">
   <div class="main">
     <v-simple-table>
     <template v-slot:default>
@@ -23,8 +24,8 @@
       </thead>
       <tbody v-for="(item, index) in items"
           :key="index">
-        <tr :class="{ odd : index % 2 === 0}" @click="handleModalItem(item)">
-          <td>{{ index }}</td>
+        <tr :class="{ odd : index % 2 === 0}" @click="() => {selectedItem = item; dialog = true;}">
+          <td>{{ index+1 }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.brewery_type }}</td>
           <td>{{ item.country }}</td>
@@ -32,9 +33,14 @@
         </tr>
       </tbody>
     </template>
-  </v-simple-table>
-    <exam-4-modal :modalItem="selectedItem" v-model="dialog"></exam-4-modal>
+    </v-simple-table>
+     <v-pagination
+      v-model="page"
+      :length="10"
+    ></v-pagination>
+    <exam-4-modal v-if="dialog" :item="selectedItem" v-model="dialog"></exam-4-modal>
   </div>
+</v-app>
 </template>
 
 <script>
@@ -67,12 +73,18 @@ export default {
           visible: true
           }
         }))
-        .then(res =>  this.items = this.items.concat(res))
+        .then(res =>  this.items = res)
         .catch(error => console.log(error));
     },
     handleModalItem(item){
       this.selectedItem = item;
       this.dialog = true;
+    }
+  },
+  watch:{
+    page: function(){
+      console.log(this.page);
+      this.fetchData(this.page, 20);
     }
   }
 };

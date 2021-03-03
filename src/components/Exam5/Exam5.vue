@@ -3,13 +3,11 @@
     <v-app id="app">
     <v-data-table
     :headers="headers"
-    :items="indexedItems"
-    :items-per-page="30"
+    :items="items"
     hide-default-footer
     >
      <template v-slot:item="{ item }">
             <tr @click="() => { selectedItem = item; dialog = true;}">
-                <td>{{item.index + 1}}</td>
                 <td>{{item.name}}</td>
                 <td>{{item.brewery_type}}</td>
                 <td>{{item.country}}</td>
@@ -17,23 +15,10 @@
             </tr>
             </template>
     </v-data-table>
-     <v-dialog
-      v-model="visible"
-     width="700"
-     height="500"
-    >
-    <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
-          Open Dialog
-        </v-btn>
-      </template>
-       <exam-6-input v-model="visible" @submit="onSubmit"></exam-6-input>
-       </v-dialog>
+     <v-pagination
+      v-model="page"
+      :length="10"
+    ></v-pagination>
     </v-app>
     <exam-4-modal v-if="dialog" :item="selectedItem" v-model="dialog"></exam-4-modal>
   </div>
@@ -42,28 +27,22 @@ name, brewery_type, country, state, city, phone, website_url
 <script>
 import API from './assets/scripts/api';
 import Exam4Modal from './components/Exam4Modal.vue';
-import Exam6Input from './components/Exam6Input';
 
 export default {
   name: 'App',
   components: {
-    Exam4Modal,
-    Exam6Input
+    Exam4Modal
   },
   data(){
     return{
       items: [],
+      page: 1,
       dialog: false,
-      visible: false,
       selectedItem: {},
       headers: [
-         {
-            text: 'Index',
-            align: 'start',
-            value: 'index',
-          },
           {
             text: 'Name',
+            align: 'start',
             value: 'name',
           },
           { text: 'Brewery_type', value: 'brewery_type' },
@@ -74,11 +53,6 @@ export default {
   },
   mounted() {
     this.fetchData();
-  },
-  computed:{
-    indexedItems() {
-        return this.items.map((item, index) => ({ ...item, index }));
-      },
   },
   methods:{
     async fetchData(page, perPage){
@@ -93,22 +67,25 @@ export default {
         .then(res =>  this.items = res)
         .catch(error => console.log(error));
     },
-    handleModalItem(){
-      console.log('hi');
-    //  this.fetchData();
-    },
-    onSubmit(item){
-      this.items.push(item);
-      console.log(this.items);
+    handleModalItem(item){
+      console.log(item);
+      console.log(this.selectedItem)
+      this.dialog = true;
     }
   },
+  watch:{
+    page: function(){
+      console.log(this.page);
+      this.fetchData(this.page, 20);
+    }
+  }
 };
 </script>
 
 <style scoped>
 .main{
   width: 100%;
-  /* margin: 20px 0 0 20px; */
+  margin: 20px 0 0 20px;
 }
 li{
   list-style: none;
@@ -142,9 +119,5 @@ li{
 }
 .folded{
   display: none;
-}
-.input-btn{
-  float: left;
-  width: 300px;
 }
 </style>
