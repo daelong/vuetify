@@ -7,7 +7,7 @@
     hide-default-footer
     >
      <template v-slot:item="{ item }">
-            <tr @click="() => { selectedItem = item; dialog = true;}">
+            <tr class="row-color" @click="() => { selectedItem = item; dialog = true;}">
                 <td>{{item.name}}</td>
                 <td>{{item.brewery_type}}</td>
                 <td>{{item.country}}</td>
@@ -119,5 +119,8 @@ li{
 }
 .folded{
   display: none;
+}
+.row-color:nth-child(even){
+  background-color: #bdc3c7;
 }
 </style>

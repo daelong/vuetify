@@ -8,29 +8,32 @@
     hide-default-footer
     >
      <template v-slot:item="{ item }">
-            <tr @click="() => { selectedItem = item; dialog = true;}">
-                <td>{{item.index + 1}}</td>
-                <td>{{item.name}}</td>
-                <td>{{item.brewery_type}}</td>
-                <td>{{item.country}}</td>
-                <td>{{item.website_url}}</td>
-            </tr>
-            </template>
+        <tr class="row-color" @click="() => { selectedItem = item; dialog = true;}">
+            <td>{{item.index + 1}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.brewery_type}}</td>
+            <td>{{item.country}}</td>
+            <td>{{item.website_url}}</td>
+        </tr>
+      </template>
     </v-data-table>
-     <v-dialog
+    <v-dialog
       v-model="visible"
      width="700"
      height="500"
     >
     <template v-slot:activator="{ on, attrs }">
+      <div class="btn-box">
         <v-btn
+          class="btn"
           color="primary"
           dark
           v-bind="attrs"
           v-on="on"
         >
-          Open Dialog
+          Add Item
         </v-btn>
+        </div>
       </template>
        <exam-6-input v-model="visible" @submit="onSubmit"></exam-6-input>
        </v-dialog>
@@ -99,7 +102,7 @@ export default {
     },
     onSubmit(item){
       this.items.push(item);
-      console.log(this.items);
+      console.log(this.items)
     }
   },
 };
@@ -133,9 +136,13 @@ li{
 .card-text{
   padding-left: 20px;
 }
-.btn{
+.btn-box{
   display: flex;
   justify-content: flex-end;
+  width: 100%;
+}
+.btn{
+  width: 10%;
 }
 .foldedBox{
   height: 50px;
@@ -146,5 +153,8 @@ li{
 .input-btn{
   float: left;
   width: 300px;
+}
+.row-color:nth-child(even){
+  background-color: #bdc3c7;
 }
 </style>
